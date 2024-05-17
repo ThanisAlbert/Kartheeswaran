@@ -10,7 +10,10 @@ import ctypes
 from io import StringIO, BytesIO
 from PIL import ImageTk, Image
 import openpyxl
+import os
+from pathlib import Path
 
+from Codes.MailSmtp import MailSmtp
 from Codes.pic2str import sendmail,maillogo
 
 
@@ -99,7 +102,7 @@ class MailCustomer:
             width=15,
             height=2,
             text="SendMail",
-            command=self.sendmail()
+            command=self.sendmail
         )
         button.pack()
 
@@ -120,9 +123,34 @@ class MailCustomer:
 
     def sendmail(self):
 
+        cwd_os = os.getcwd()
+        communication = str(Path.cwd()) + str("\\Communication")
+        inputwkpath = str(Path.cwd()) + str("\\Inputfile\\Email_Communication.xlsm")
         scheme_details = textbox_schemedetails.get("1.0", tk.END)
-        # Print the text
-        print("Scheme Details:", scheme_details)
+
+        # Load the workbook
+        workbook = openpyxl.load_workbook(inputwkpath, keep_vba=True)
+        first_sheet_name = workbook.sheetnames[1]
+        sheet = workbook[first_sheet_name]
+
+        # Iterate through the rows
+        for i in range(2,10000):
+
+            if str(sheet.cell(row=i,column=1).value)!="None":
+
+                customercode = (str(sheet.cell(row=i,column=1).value))
+                customername = (str(sheet.cell(row=i,column=2).value))
+                cnrefno = (str(sheet.cell(row=i,column=3).value))
+                partnermail = (str(sheet.cell(row=i,column=4).value))
+                ccdmail = (str(sheet.cell(row=i,column=5).value))
+
+                customercode="S41069"
+                cnrefno="2400308438"
+
+                smtpmail = MailSmtp(customercode,customername,cnrefno,partnermail,ccdmail,communication)
+                smtpmail.sendmailtocustomers()
+
+
 
 
 
