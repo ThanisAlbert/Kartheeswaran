@@ -18,9 +18,7 @@ from Codes.pic2str import sendmail,maillogo
 
 
 class MailCustomer:
-
     def __init__(self):
-
         pass
 
     def Gui(self):
@@ -125,7 +123,7 @@ class MailCustomer:
 
         cwd_os = os.getcwd()
         communication = str(Path.cwd()) + str("\\Communication")
-        inputwkpath = str(Path.cwd()) + str("\\Inputfile\\Email_Communication.xlsm")
+        inputwkpath = str(Path.cwd()) + str("\\Email_Communication.xlsm")
         scheme_details = textbox_schemedetails.get("1.0", tk.END)
 
         # Load the workbook
@@ -144,10 +142,7 @@ class MailCustomer:
                 partnermail = (str(sheet.cell(row=i,column=4).value))
                 ccdmail = (str(sheet.cell(row=i,column=5).value))
 
-                customercode="S41069"
-                cnrefno="2400308438"
-
-                smtpmail = MailSmtp(customercode,customername,cnrefno,partnermail,ccdmail,communication)
+                smtpmail = MailSmtp(customercode,customername,cnrefno,partnermail,ccdmail,communication,scheme_details)
                 smtpmail.sendmailtocustomers()
 
 
